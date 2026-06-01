@@ -1,0 +1,8 @@
+{
+    "chat.tools.terminal.autoApprove": {
+        "/^cd '/Users/sivagurugurunathan/Context Engineering Agent POC/context-engineering-agent' && python3 -m unittest tests\\.test_agents$/": {
+            "approve": true,
+            "matchCommandLine": true
+        }
+    }
+}

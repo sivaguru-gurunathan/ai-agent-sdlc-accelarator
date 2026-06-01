@@ -1,0 +1,325 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Context Engineering Planning Agent</title>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg: #f5f5f5;
+      --white: #ffffff;
+      --dark: #1a1a1a;
+      --border: #e0e0e0;
+      --blue-light: #e8f4fd;
+      --blue-border: #b8d4e8;
+      --blue-text: #1565c0;
+      --text-primary: #1a1a1a;
+      --text-secondary: #666666;
+      --text-hint: #888888;
+      --accent: #1a1a1a;
+      --pill-bg: #f0f0f0;
+      --pill-border: #d0d0d0;
+      --red: #e53e3e;
+    }
+    html,body{height:100%;margin:0;font-family:'Inter',sans-serif;background:var(--bg);color:var(--text-primary)}
+    .container{max-width:900px;margin:40px auto;padding:24px}
+    .card{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:28px;box-shadow:0 2px 6px rgba(0,0,0,0.03)}
+    h1.title{font-size:28px;margin:0 0 8px;font-weight:700}
+    p.subtitle{margin:0 0 18px;color:var(--text-secondary);font-size:15px}
+
+    /* Info box */
+    .info{background:var(--blue-light);border:1px solid var(--blue-border);border-radius:8px;padding:16px;display:flex;gap:12px;align-items:flex-start;margin-bottom:18px}
+    .info .icon{font-size:20px}
+    .info .heading{font-weight:600;color:var(--blue-text);margin-bottom:6px}
+    .info p{margin:0;color:var(--text-secondary);font-size:14px}
+
+    /* Form */
+    form .field{margin-bottom:14px}
+    label{display:block;font-size:14px;font-weight:600;margin-bottom:8px}
+    .required{color:var(--red);margin-left:6px}
+    input[type='text']{width:100%;padding:12px 14px;border:1px solid var(--border);border-radius:8px;font-size:14px;outline:none;transition:border-color 0.2s}
+    input[type='text']:focus{border-color:var(--dark)}
+    .hint{font-size:12px;color:var(--text-hint);font-style:italic;margin-top:6px}
+
+    .actions{display:flex;justify-content:flex-end;gap:12px;margin-top:16px}
+    .btn{padding:12px 24px;background:var(--dark);color:#fff;border:none;border-radius:25px;font-size:14px;font-weight:500;cursor:pointer}
+
+    /* Chat screen */
+    .chat-wrap{display:flex;flex-direction:column;height:70vh}
+    .chat-header{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:transparent}
+    .pills{display:flex;gap:8px}
+    .pill{background:var(--pill-bg);border:1px solid var(--pill-border);border-radius:6px;padding:6px 12px;font-size:13px;display:inline-flex;gap:6px;align-items:center}
+
+    .chat-area{background:var(--white);border:1px solid var(--border);border-radius:8px;padding:0;overflow:auto;flex:1}
+    .message{display:flex;gap:12px;padding:20px;border-bottom:1px solid #f0f0f0}
+    .avatar{width:40px;height:40px;border-radius:50%;background:#6c63ff;color:white;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+    .msg-content{flex:1}
+    .msg-text{white-space:pre-wrap;color:var(--text-primary)}
+    .timestamp{font-size:12px;color:var(--text-hint);text-align:right;margin-top:8px}
+
+    .chat-input{display:flex;gap:8px;padding:12px;margin-top:12px}
+    .chat-input input{flex:1;padding:12px 14px;border:1px solid var(--border);border-radius:8px;font-size:14px}
+    .send-btn{padding:10px 16px;border-radius:8px;background:var(--dark);color:#fff;border:none;cursor:pointer}
+
+    /* thinking animation */
+    .dots span{display:inline-block;width:6px;height:6px;margin:0 2px;background:#666;border-radius:50%;opacity:0;animation:dots 1s infinite}
+    .dots span:nth-child(1){animation-delay:0s}
+    .dots span:nth-child(2){animation-delay:0.15s}
+    .dots span:nth-child(3){animation-delay:0.3s}
+    @keyframes dots{0%{opacity:0}50%{opacity:1}100%{opacity:0}}
+
+    /* markdown rendering */
+    .markdown h1{font-size:20px;border-bottom:1px solid #eee;padding-bottom:6px}
+    .markdown h2{font-size:18px;border-bottom:2px solid #eee;padding-bottom:6px}
+    .markdown h3{font-size:16px}
+    .markdown pre{background:#111;color:#fff;padding:12px;border-radius:8px;overflow:auto}
+    .markdown code{background:#f3f3f3;padding:2px 6px;border-radius:4px}
+    .markdown ul, .markdown ol{padding-left:18px}
+
+    /* hidden */
+    .hidden{display:none}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div id="screen1" class="card">
+      <h1 class="title">Connect Your Repository</h1>
+      <p class="subtitle">Let's analyze your source code to generate documentation and plans</p>
+
+      <div class="info">
+        <div class="icon">ℹ️</div>
+        <div>
+          <div class="heading">About This Step</div>
+          <p>We need your GitHub repository URL to analyze your codebase. You can find this on your repository's Code button using the HTTPS option. We support GitHub, GitLab, and Bitbucket repositories.</p>
+        </div>
+      </div>
+
+      <form id="repoForm" onsubmit="return false;">
+        <div class="field">
+          <label>Repository URL <span class="required">*</span></label>
+          <input id="repoUrl" type="text" placeholder="https://github.com/myorg/my-awesome-app" required />
+          <div class="hint">💡 Tip: Use HTTPS URL from the 'Code' button on your repository</div>
+        </div>
+
+        <div class="field">
+          <label>Project Name</label>
+          <input id="projectName" type="text" placeholder="my-awesome-app" />
+          <div class="hint">Optional. Will be auto-populated from GitHub URL if not provided.</div>
+        </div>
+
+        <div class="field">
+          <label>Default Branch</label>
+          <input id="branchName" type="text" placeholder="non-prod" />
+          <div class="hint">Optional. Defaults to 'non-prod' if not specified.</div>
+        </div>
+
+        <div class="field">
+          <label>Repository Path</label>
+          <input id="repoPath" type="text" placeholder="" />
+          <div class="hint">Auto-generated from GitHub URL. This is where the repository will be cloned.</div>
+        </div>
+
+        <div class="actions">
+          <button class="btn" id="cancelBtn" type="button">Cancel</button>
+          <button class="btn" id="createBtn" type="button">Create Project</button>
+        </div>
+      </form>
+    </div>
+
+    <div id="screen2" class="card hidden" style="margin-top:20px;">
+      <div class="chat-header">
+        <div>
+          <h1 class="title">Agent Chat</h1>
+        </div>
+        <div class="pills">
+          <div class="pill" id="pillProject">Project: -</div>
+          <div class="pill" id="pillBranch">Branch: -</div>
+        </div>
+      </div>
+
+      <div class="chat-wrap">
+        <div id="chatArea" class="chat-area"></div>
+
+        <div style="padding:12px">
+          <div class="chat-input">
+            <input id="chatInput" type="text" placeholder="Type your message..." />
+            <button class="send-btn" id="sendBtn">Send</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Helpers
+    const el = id => document.getElementById(id);
+    const nowTime = () => {
+      const d = new Date();
+      return d.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+    }
+
+    // Auto-fill logic
+    el('repoUrl').addEventListener('input', e=>{
+      const v = e.target.value.trim();
+      if(!v) return;
+      try{
+        // extract last path element
+        let p = v.replace(/\.git$/,'').replace(/\/+$/,'');
+        const parts = p.split('/');
+        const name = parts[parts.length-1] || '';
+        if(name && !el('projectName').value) el('projectName').value = name;
+        if(name) el('repoPath').value = '/tmp/repos/' + name;
+      }catch(err){}
+    });
+
+    // Screen switching
+    function showScreen(n){
+      el('screen1').classList.toggle('hidden', n!==1);
+      el('screen2').classList.toggle('hidden', n!==2);
+    }
+
+    // Create project behavior
+    el('createBtn').addEventListener('click', ()=>{
+      const url = el('repoUrl').value.trim();
+      if(!url){
+        alert('Repository URL is required');
+        return;
+      }
+      const proj = el('projectName').value.trim() || (url.split('/').filter(Boolean).pop()||'project');
+      const branch = el('branchName').value.trim() || 'non-prod';
+      el('pillProject').textContent = 'Project: ' + proj + '.iam';
+      el('pillBranch').textContent = 'Branch: ' + (branch || 'main');
+      showScreen(2);
+      // show initial agent message
+      addAgentWelcome(proj);
+    });
+
+    el('cancelBtn').addEventListener('click', ()=>{
+      el('repoForm').reset();
+    });
+
+    // Chat logic
+    const chatArea = el('chatArea');
+    function addMessage(from='user', text='', meta=''){
+      const wrap = document.createElement('div');
+      wrap.className = 'message';
+      const avatar = document.createElement('div'); avatar.className='avatar';
+      avatar.textContent = from==='agent' ? '🤖' : '👤';
+      const content = document.createElement('div'); content.className='msg-content';
+      const txt = document.createElement('div'); txt.className='msg-text'; txt.innerHTML = text;
+      content.appendChild(txt);
+      const ts = document.createElement('div'); ts.className='timestamp'; ts.textContent = meta || nowTime();
+      content.appendChild(ts);
+      wrap.appendChild(avatar); wrap.appendChild(content);
+      chatArea.appendChild(wrap);
+      chatArea.scrollTop = chatArea.scrollHeight;
+      return wrap;
+    }
+
+    function addAgentWelcome(project){
+      const lines = [];
+      lines.push('🌿 Welcome to Project Assistant for project `' + project + '`');
+      lines.push('↗ Available Integrations: Confluence, Figma');
+      lines.push("💡 Start Here: I can analyze this repository to understand its structure. Just ask me to 'analyze this repository' or 'create documentation'.");
+      addMessage('agent', lines.join('\n\n'), nowTime());
+    }
+
+    // Simple markdown renderer per spec
+    function renderMarkdown(md){
+      if(!md) return '';
+      // escape html
+      md = md.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+      // code block
+      md = md.replace(/```([\s\S]*?)```/g, (m,code)=>{
+        return '<pre><code>' + code.replace(/&lt;br&gt;/g,'\n') + '</code></pre>';
+      });
+      // headings
+      md = md.replace(/^###\s*(.*)$/gm, '<h3>$1</h3>');
+      md = md.replace(/^##\s*(.*)$/gm, '<h2>$1</h2>');
+      md = md.replace(/^#\s*(.*)$/gm, '<h1>$1</h1>');
+      // bold
+      md = md.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+      // inline code
+      md = md.replace(/`([^`]+)`/g, '<code>$1</code>');
+      // lists
+      md = md.replace(/^\s*-\s+(.*)$/gm, '<li>$1</li>');
+      md = md.replace(/(<li>[\s\S]*?<\/li>)/g, m=> '<ul>'+m+'</ul>');
+      md = md.replace(/^\s*\d+\.\s+(.*)$/gm, '<li>$1</li>');
+      md = md.replace(/(<li>[\s\S]*?<\/li>)/g, m=> '<ol>'+m+'</ol>');
+      // paragraphs and double breaks
+      md = md.replace(/\n\n/g, '<br><br>');
+      // single line breaks stay
+      return md;
+    }
+
+    // API integration
+    async function callAnalyze(github_url, agent_type){
+      const body = {
+        github_url,
+        agent_type,
+        options: {include_features:true, include_architecture:true, include_implementation_plan:true}
+      };
+      try{
+        const res = await fetch('http://127.0.0.1:5001/api/analyze',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+        if(!res.ok) throw new Error('Network response was not ok');
+        const data = await res.json();
+        return data;
+      }catch(err){
+        throw err;
+      }
+    }
+
+    // Send handler
+    async function sendMessage(){
+      const text = el('chatInput').value.trim();
+      if(!text) return;
+      addMessage('user', text, nowTime());
+      el('chatInput').value='';
+
+      // Check commands
+      const cmd = text.toLowerCase().trim();
+      let agent_type = null;
+      if(cmd==='analyze this repository' || cmd==='create documentation') agent_type='snapshot';
+      else if(cmd==='create a plan' ) agent_type='planning';
+      else if(cmd==='plan features') agent_type='feature';
+      else {
+        addMessage('agent', "I can help you analyze this repository. Try: 'analyze this repository' or 'create a plan'", nowTime());
+        return;
+      }
+
+      // show thinking
+      const thinkingWrap = addMessage('agent', '<div class="dots"><span></span><span></span><span></span></div>', nowTime());
+
+      try{
+        const github_url = el('repoUrl').value.trim();
+        const resp = await callAnalyze(github_url, agent_type);
+        // remove thinking
+        thinkingWrap.remove();
+        if(!resp){
+          addMessage('agent','❌ Could not connect to server. Make sure Flask is running.', nowTime());
+          return;
+        }
+        if(resp.status && resp.status!=='success'){
+          const msg = resp.message || resp.detail || JSON.stringify(resp);
+          addMessage('agent','❌ Error: '+msg, nowTime());
+          return;
+        }
+        const body = resp.planning_document || resp.planning || JSON.stringify(resp.sections||resp);
+        const html = renderMarkdown(body);
+        addMessage('agent','<div class="markdown">'+html+'</div>', nowTime());
+      }catch(err){
+        thinkingWrap.remove();
+        addMessage('agent','❌ Could not connect to server. Make sure Flask is running.\n'+err.message, nowTime());
+      }
+    }
+
+    el('sendBtn').addEventListener('click', sendMessage);
+    el('chatInput').addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); sendMessage(); } });
+
+    // init
+    showScreen(1);
+  </script>
+</body>
+</html>
