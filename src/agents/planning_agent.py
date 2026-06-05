@@ -14,20 +14,19 @@ class PlanningAgent(BaseAgent):
         repo_name = repo_analysis.get("repo_name", "repository")
 
         system_prompt = (
-            "You are an expert software architect."
-            " Generate a complete planning document for the repository analysis provided."
-            " Return a structured Markdown document containing the following sections:"
-            " Project Overview, Current Architecture, Recommended Tech Stack, Feature Breakdown,"
-            " Implementation Plan, Deployment Recommendations."
-            " Include all requested sections explicitly."
+            "You are a senior engineer writing a brief repository briefing for developers and tech leads."
+            " Be concise — no filler, no recommendations, no implementation plans."
+            " Use only what you can directly observe in the code provided."
+            " Return Markdown with exactly these four sections:"
+            " ## What it does, ## Tech Stack, ## Key Modules, ## How to Run."
+            " Each section should be 3-6 bullet points. Total response must stay under 400 words."
         )
 
         prompt = (
-            f"Given the repository '{repo_name}', produce a full planning document. "
-            f"Use the analysis summary and file list to infer architecture, languages, and feature ideas.\n\n"
-            f"Repository summary:\n{summary}\n\n"
-            f"Options:\n{options}\n\n"
-            "Return the response as Markdown with headings and numbered implementation steps."
+            f"Write a concise briefing for the repository '{repo_name}'.\n\n"
+            f"Source files:\n{summary}\n\n"
+            "Cover: what the project does, languages and frameworks used, the main modules and their role, "
+            "and how to start or run it. Stick to facts visible in the code — no guessing."
         )
 
         planning_document = self.invoke_claude(prompt, system_prompt)

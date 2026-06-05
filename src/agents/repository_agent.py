@@ -25,8 +25,8 @@ TEXT_EXTENSIONS = {
 }
 
 SKIP_DIRS = {"node_modules", ".git", "__pycache__", "dist", "build"}
-MAX_LINES = 500
-MAX_SUMMARY_CHARS = 50000
+MAX_LINES = 60
+MAX_SUMMARY_CHARS = 8000
 
 
 class RepositoryAgent(BaseAgent):

@@ -49,11 +49,12 @@ def analyze():
         return jsonify({"status": "error", "message": "Invalid JSON payload."}), 400
 
     github_url = request_data.github_url
+    figma_url = request_data.figma_url
     agent_type = request_data.agent_type
     options = request_data.options or {}
 
     try:
-        result = orchestrator.run_analysis(github_url, agent_type, options)
+        result = orchestrator.run_analysis(github_url, agent_type, options, figma_url=figma_url)
         return jsonify(result), 200
     except Exception as exc:
         logger.exception("Analysis failed")
@@ -77,4 +78,4 @@ def handle_500(error):
 if __name__ == "__main__":
     port = int(os.getenv("FLASK_PORT", 5000))
     debug = os.getenv("FLASK_ENV", "production") == "development"
-    app.run(host="0.0.0.0", port=port, debug=debug)
+    app.run(host="0.0.0.0", port=port, debug=debug, threaded=True)

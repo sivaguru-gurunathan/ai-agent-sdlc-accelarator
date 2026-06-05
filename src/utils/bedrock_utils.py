@@ -40,11 +40,8 @@ def test_bedrock_connection():
 
 def format_messages(prompt: str, system_prompt: str):
     return {
+        "system": system_prompt,
         "messages": [
-            {
-                "role": "user",
-                "content": [{"type": "text", "text": prompt}],
-            }
+            {"role": "user", "content": prompt},
         ],
-        "system": [{"type": "text", "text": system_prompt}],
     }

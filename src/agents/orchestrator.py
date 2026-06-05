@@ -3,6 +3,7 @@ import logging
 from src.agents.repository_agent import RepositoryAgent
 from src.agents.planning_agent import PlanningAgent
 from src.agents.feature_agent import FeatureAgent
+from src.agents.figma_agent import FigmaAgent
 
 logger = logging.getLogger(__name__)
 
@@ -14,13 +15,28 @@ class Orchestrator:
             {"id": "planning", "name": "Project Planning", "description": "High-level architecture and planning"},
             {"id": "feature", "name": "Feature Planning", "description": "Feature specifications"},
             {"id": "snapshot", "name": "Repository Snapshot", "description": "Codebase documentation"},
+            {"id": "figma", "name": "Figma Design Analysis", "description": "Planning document from Figma design"},
         ]
 
     def get_available_agents(self):
         return self.available_agents
 
-    def run_analysis(self, github_url: str, agent_type: str, options: dict) -> dict:
+    def run_analysis(self, github_url: str, agent_type: str, options: dict, figma_url: str = None) -> dict:
         response = {"status": "success", "agent_used": agent_type, "metadata": {}, "sections": {}, "planning_document": None}
+
+        if agent_type == "figma":
+            try:
+                logger.info("Starting Figma design analysis")
+                figma_agent = FigmaAgent(model_id=self.model_id)
+                result = figma_agent.run({"figma_url": figma_url})
+                response["planning_document"] = result.get("planning_document")
+                response["repo_name"] = result.get("design_name")
+                response["metadata"]["screen_count"] = result.get("screen_count", 0)
+            except Exception as exc:
+                logger.exception("Figma analysis failed")
+                return {"status": "error", "message": "Figma analysis failed.", "detail": str(exc)}
+            return response
+
         repo_agent = RepositoryAgent(model_id=self.model_id)
         planning_agent = PlanningAgent(model_id=self.model_id)
         feature_agent = FeatureAgent(model_id=self.model_id)
@@ -40,8 +56,16 @@ class Orchestrator:
             return {"status": "error", "message": "Repository analysis failed.", "detail": str(exc)}
 
         if agent_type == "snapshot":
-            response["planning_document"] = "Repository analysis complete."
-            response["sections"] = {"overview": repo_analysis.get("summary", "")}
+            try:
+                logger.info("Starting architecture analysis")
+                planning_result = planning_agent.run({"repo_analysis": repo_analysis, "options": options})
+                response["planning_document"] = planning_result.get("planning_document")
+                response["sections"] = planning_result.get("sections", {})
+            except Exception as exc:
+                logger.exception("Architecture analysis failed")
+                response["status"] = "warning"
+                response["message"] = "Architecture analysis failed; repository was read successfully."
+                response["detail"] = str(exc)
             return response
 
         try:
