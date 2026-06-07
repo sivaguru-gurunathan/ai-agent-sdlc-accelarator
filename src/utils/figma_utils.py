@@ -4,7 +4,7 @@ import requests
 
 FIGMA_API_BASE = "https://api.figma.com/v1"
 
-# In-memory cache: file_key → figma response dict (persists for the lifetime of the process)
+# In-memory cache: cache_key → figma response dict (persists for the lifetime of the process)
 _cache: dict = {}
 
 
@@ -26,8 +26,6 @@ def fetch_figma_file(file_key: str, token: str, max_retries: int = 2, depth: int
     if cache_key in _cache:
         return _cache[cache_key]
 
-    # depth=2 fetches pages + their direct children (screens) only — avoids downloading
-    # the entire component tree which can be hundreds of MB for large files.
     url = f"{FIGMA_API_BASE}/files/{file_key}?depth={depth}"
     headers = {"X-Figma-Token": token}
 
@@ -60,6 +58,86 @@ def fetch_figma_file(file_key: str, token: str, max_retries: int = 2, depth: int
     raise RuntimeError("Failed to fetch Figma file after retries.")
 
 
+def fetch_figma_nodes(file_key: str, node_ids: list, token: str, timeout: int = 25) -> dict:
+    """Fetch full node trees for specific node IDs via the nodes endpoint (no depth limit)."""
+    if not node_ids:
+        return {}
+    cache_key = f"{file_key}:nodes:{','.join(node_ids[:10])}"
+    if cache_key in _cache:
+        return _cache[cache_key]
+
+    ids_str = ",".join(str(nid) for nid in node_ids[:10])
+    url = f"{FIGMA_API_BASE}/files/{file_key}/nodes?ids={ids_str}"
+    headers = {"X-Figma-Token": token}
+    try:
+        resp = requests.get(url, headers=headers, timeout=timeout)
+    except requests.exceptions.Timeout:
+        raise RuntimeError("Figma nodes API timed out.")
+    if resp.status_code == 429:
+        retry_after = int(resp.headers.get("Retry-After", 60))
+        raise RuntimeError(f"Figma API rate limit hit. Please wait {retry_after} seconds.")
+    if resp.status_code == 403:
+        raise RuntimeError("Invalid Figma token or no access to this file.")
+    resp.raise_for_status()
+    data = resp.json()
+    _cache[cache_key] = data
+    return data
+
+
+def _collect_all_texts(node: dict, depth: int = 0, max_depth: int = 12) -> list:
+    """Collect all TEXT node content recursively — goes deeper than _extract_texts."""
+    if depth > max_depth:
+        return []
+    texts = []
+    if node.get("type") == "TEXT":
+        chars = node.get("characters", "").strip()
+        if chars and 1 < len(chars) < 200:
+            texts.append(chars)
+    for child in node.get("children", []):
+        texts.extend(_collect_all_texts(child, depth + 1, max_depth))
+    return texts
+
+
+def _collect_named_ui_elements(node: dict, depth: int = 0, max_depth: int = 10) -> list:
+    """Collect component/instance/frame nodes whose names suggest specific UI patterns."""
+    if depth > max_depth:
+        return []
+    elements = []
+    name = node.get("name", "").strip()
+    ntype = node.get("type", "")
+    ui_keywords = (
+        "button", "btn", "input", "field", "search", "select", "dropdown",
+        "table", "chart", "graph", "card", "modal", "sidebar", "header",
+        "nav", "menu", "tab", "badge", "chip", "form", "filter", "export",
+        "pagination", "calendar", "date", "picker", "transaction", "dashboard",
+        "report", "setting", "profile", "notification", "alert", "summary",
+        "balance", "income", "expense", "savings", "cash", "spending",
+    )
+    if ntype in ("COMPONENT", "INSTANCE", "FRAME") and name:
+        if any(kw in name.lower() for kw in ui_keywords):
+            elements.append(f"{ntype}:{name}")
+    for child in node.get("children", []):
+        elements.extend(_collect_named_ui_elements(child, depth + 1, max_depth))
+    return elements
+
+
+def build_screen_inventory_from_nodes(screens_meta: list, nodes_response: dict) -> list:
+    """Build rich per-screen data dicts from the Figma nodes API response."""
+    inventory = []
+    nodes_map = nodes_response.get("nodes", {})
+    for screen in screens_meta:
+        node_id = screen.get("id", "")
+        node_doc = nodes_map.get(node_id, {}).get("document", {})
+        inventory.append({
+            "name": screen.get("name", "Screen"),
+            "id": node_id,
+            "texts": list(dict.fromkeys(_collect_all_texts(node_doc)))[:60] if node_doc else [],
+            "ui_elements": list(dict.fromkeys(_collect_named_ui_elements(node_doc)))[:30] if node_doc else [],
+            "components": list(dict.fromkeys(_extract_components(node_doc)))[:20] if node_doc else [],
+        })
+    return inventory
+
+
 def _extract_texts(node: dict, depth: int = 0) -> list:
     if depth > 5:
         return []
@@ -86,7 +164,21 @@ def _extract_components(node: dict, depth: int = 0) -> list:
     return components
 
 
-def extract_design_summary(data: dict, max_chars: int = 6000) -> str:
+def _get_top_frames(page_node: dict) -> list:
+    """Return top-level screen frames from a page, handling SECTION/GROUP nesting."""
+    frames = []
+    for child in page_node.get("children", []):
+        ctype = child.get("type", "")
+        if ctype in ("FRAME", "COMPONENT"):
+            frames.append(child)
+        elif ctype in ("SECTION", "GROUP"):
+            for grandchild in child.get("children", []):
+                if grandchild.get("type") in ("FRAME", "COMPONENT"):
+                    frames.append(grandchild)
+    return frames
+
+
+def extract_design_summary(data: dict, max_chars: int = 8000) -> str:
     document = data.get("document", {})
     pages = document.get("children", [])
     design_name = data.get("name", "Figma Design")
@@ -96,7 +188,7 @@ def extract_design_summary(data: dict, max_chars: int = 6000) -> str:
 
     for page in pages:
         page_name = page.get("name", "Page")
-        frames = [c for c in page.get("children", []) if c.get("type") in ("FRAME", "COMPONENT")]
+        frames = _get_top_frames(page)
         if not frames:
             continue
 
@@ -108,14 +200,14 @@ def extract_design_summary(data: dict, max_chars: int = 6000) -> str:
 
         for frame in frames:
             frame_name = frame.get("name", "Screen")
-            texts = list(dict.fromkeys(_extract_texts(frame)))[:12]
-            components = list(dict.fromkeys(_extract_components(frame)))[:8]
+            texts = list(dict.fromkeys(_extract_texts(frame)))[:15]
+            components = list(dict.fromkeys(_extract_components(frame)))[:10]
 
             entry = f"\n**{frame_name}**\n"
             if texts:
-                entry += "Labels/Text: " + " | ".join(texts[:8]) + "\n"
+                entry += "Labels/Text: " + " | ".join(texts[:10]) + "\n"
             if components:
-                entry += "Components: " + ", ".join(components[:6]) + "\n"
+                entry += "Components: " + ", ".join(components[:8]) + "\n"
 
             if chars + len(entry) > max_chars:
                 break

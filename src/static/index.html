@@ -22,35 +22,46 @@
       --pill-bg: #f0f0f0;
       --pill-border: #d0d0d0;
       --red: #e53e3e;
+      --purple: #5b2ed6;
+      --purple-light: #f0ebff;
+      --purple-border: #c4a8ff;
     }
     html,body{height:100%;margin:0;font-family:'Inter',sans-serif;background:var(--bg);color:var(--text-primary)}
-    .container{max-width:900px;margin:40px auto;padding:24px}
-    .card{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:28px;box-shadow:0 2px 6px rgba(0,0,0,0.03)}
-    h1.title{font-size:28px;margin:0 0 8px;font-weight:700}
-    p.subtitle{margin:0 0 18px;color:var(--text-secondary);font-size:15px}
+    .container{max-width:940px;margin:40px auto;padding:24px}
 
-    /* Info box */
-    .info{background:var(--blue-light);border:1px solid var(--blue-border);border-radius:8px;padding:16px;display:flex;gap:12px;align-items:flex-start;margin-bottom:18px}
-    .info .icon{font-size:20px}
-    .info .heading{font-weight:600;color:var(--blue-text);margin-bottom:6px}
-    .info p{margin:0;color:var(--text-secondary);font-size:14px}
+    /* Home screen */
+    .home-title{text-align:center;font-size:32px;font-weight:800;margin:0 0 6px}
+    .home-sub{text-align:center;color:var(--text-secondary);font-size:15px;margin:0 0 28px}
 
-    /* Form */
-    form .field{margin-bottom:14px}
-    label{display:block;font-size:14px;font-weight:600;margin-bottom:8px}
-    .required{color:var(--red);margin-left:6px}
-    input[type='text']{width:100%;padding:12px 14px;border:1px solid var(--border);border-radius:8px;font-size:14px;outline:none;transition:border-color 0.2s}
+    .start-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    @media(max-width:620px){.start-grid{grid-template-columns:1fr}}
+
+    .start-card{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:28px;display:flex;flex-direction:column;gap:14px;box-shadow:0 2px 6px rgba(0,0,0,0.04)}
+    .start-card.primary{border-color:#b3d4fb;background:linear-gradient(145deg,#f0f7ff,#ffffff)}
+    .start-card-icon{font-size:32px;line-height:1}
+    .start-card-title{font-size:18px;font-weight:700;margin:0}
+    .start-card-desc{font-size:14px;color:var(--text-secondary);margin:0;line-height:1.6}
+    .start-card-spacer{flex:1}
+
+    label{display:block;font-size:13px;font-weight:600;margin-bottom:6px;color:var(--text-secondary)}
+    .field{margin-bottom:12px}
+    input[type='text']{width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:14px;outline:none;transition:border-color 0.2s;box-sizing:border-box}
     input[type='text']:focus{border-color:var(--dark)}
-    .hint{font-size:12px;color:var(--text-hint);font-style:italic;margin-top:6px}
+    .hint{font-size:12px;color:var(--text-hint);font-style:italic;margin-top:5px}
+    .opt-tag{font-size:11px;font-weight:400;color:var(--text-hint);margin-left:6px}
 
-    .actions{display:flex;justify-content:flex-end;gap:12px;margin-top:16px}
-    .btn{padding:12px 24px;background:var(--dark);color:#fff;border:none;border-radius:25px;font-size:14px;font-weight:500;cursor:pointer}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 24px;background:var(--dark);color:#fff;border:none;border-radius:25px;font-size:14px;font-weight:500;cursor:pointer;transition:opacity 0.15s;width:100%}
+    .btn:hover{opacity:0.85}
+    .btn-outline{background:transparent;color:var(--dark);border:1.5px solid var(--dark)}
+    .btn-outline:hover{background:#f5f5f5}
 
     /* Chat screen */
+    .card{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:28px;box-shadow:0 2px 6px rgba(0,0,0,0.03)}
     .chat-wrap{display:flex;flex-direction:column;height:70vh}
     .chat-header{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:transparent}
-    .pills{display:flex;gap:8px}
+    .pills{display:flex;gap:8px;flex-wrap:wrap}
     .pill{background:var(--pill-bg);border:1px solid var(--pill-border);border-radius:6px;padding:6px 12px;font-size:13px;display:inline-flex;gap:6px;align-items:center}
+    .pill-link{background:transparent;border:none;color:var(--purple);font-size:13px;cursor:pointer;padding:0;text-decoration:underline}
 
     .chat-area{background:var(--white);border:1px solid var(--border);border-radius:8px;padding:0;overflow:auto;flex:1}
     .message{display:flex;gap:12px;padding:20px;border-bottom:1px solid #f0f0f0}
@@ -60,13 +71,14 @@
     .timestamp{font-size:12px;color:var(--text-hint);text-align:right;margin-top:8px}
 
     .chat-input{display:flex;gap:8px;padding:12px;margin-top:12px}
-    .chat-input input{flex:1;padding:12px 14px;border:1px solid var(--border);border-radius:8px;font-size:14px}
+    .chat-input input{flex:1;padding:12px 14px;border:1px solid var(--border);border-radius:8px;font-size:14px;outline:none}
+    .chat-input input:focus{border-color:var(--dark)}
     .send-btn{padding:10px 16px;border-radius:8px;background:var(--dark);color:#fff;border:none;cursor:pointer}
     .upload-btn{padding:10px 14px;border-radius:8px;background:var(--pill-bg);color:var(--dark);border:1px solid var(--pill-border);cursor:pointer;font-size:18px;line-height:1;transition:background 0.15s}
     .upload-btn:hover{background:var(--border)}
-    .qa-btn{padding:7px 13px;border-radius:20px;background:var(--pill-bg);color:var(--text);border:1px solid var(--pill-border);cursor:pointer;font-size:13px;transition:background 0.15s}
+    .qa-btn{padding:7px 13px;border-radius:20px;background:var(--pill-bg);color:var(--text-primary);border:1px solid var(--pill-border);cursor:pointer;font-size:13px;transition:background 0.15s}
     .qa-btn:hover{background:var(--border)}
-    .qa-btn-figma{background:#f0ebff;border-color:#c4a8ff;color:#5b2ed6}
+    .qa-btn-figma{background:var(--purple-light);border-color:var(--purple-border);color:var(--purple)}
     .qa-btn-figma:hover{background:#e3d8ff}
     .upload-badge{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;background:#e8f5e9;border:1px solid #a5d6a7;border-radius:20px;font-size:12px;color:#2e7d32;margin:4px 0}
 
@@ -83,73 +95,68 @@
     .markdown h3{font-size:16px}
     .markdown pre{background:#111;color:#fff;padding:12px;border-radius:8px;overflow:auto}
     .markdown code{background:#f3f3f3;padding:2px 6px;border-radius:4px}
-    .markdown ul, .markdown ol{padding-left:18px}
+    .markdown ul,.markdown ol{padding-left:18px}
 
-    /* hidden */
     .hidden{display:none}
   </style>
 </head>
 <body>
   <div class="container">
-    <h1 style="text-align:center;font-size:32px;font-weight:800;margin:0 0 24px;">Context Engineering Agent</h1>
-    <div id="screen1" class="card">
-      <h1 class="title">Connect Your Repository</h1>
-      <p class="subtitle">Let's analyze your source code to generate documentation and plans</p>
+    <h1 class="home-title">Context Engineering Agent</h1>
+    <p class="home-sub">Generate Angular 22 planning documents from Figma designs &amp; API specs</p>
 
-      <div class="info">
-        <div class="icon">ℹ️</div>
-        <div>
-          <div class="heading">About This Step</div>
-          <p>We need your GitHub repository URL to analyze your codebase. You can find this on your repository's Code button using the HTTPS option. We support GitHub, GitLab, and Bitbucket repositories.</p>
+    <!-- ── Screen 1: Home / start options ── -->
+    <div id="screen1">
+      <div class="start-grid">
+
+        <!-- Option A: Chat Directly -->
+        <div class="start-card primary">
+          <div class="start-card-icon">💬</div>
+          <div class="start-card-title">Chat Directly</div>
+          <div class="start-card-desc">
+            Start immediately — no repository needed. Attach your Figma design URL, upload API docs using the 📎 button, and share a GitHub URL in the chat later if you need code analysis.
+          </div>
+          <div class="start-card-spacer"></div>
+          <button class="btn" onclick="startChatDirectly()">Start Chat →</button>
         </div>
+
+        <!-- Option B: Connect Repository -->
+        <div class="start-card">
+          <div class="start-card-icon">📁</div>
+          <div class="start-card-title">Connect Repository</div>
+          <div class="start-card-desc">
+            Set up project context with a GitHub repository for code analysis, planning, and feature docs. All fields below are optional.
+          </div>
+          <div class="field">
+            <label>GitHub Repository URL <span class="opt-tag">(optional)</span></label>
+            <input id="repoUrl" type="text" placeholder="https://github.com/myorg/my-app" />
+          </div>
+          <div class="field">
+            <label>Project Name <span class="opt-tag">(optional)</span></label>
+            <input id="projectName" type="text" placeholder="my-app" />
+            <div class="hint">Auto-detected from URL if left blank.</div>
+          </div>
+          <div class="field">
+            <label>Figma Design URL <span class="opt-tag">(optional)</span></label>
+            <input id="figmaUrl" type="text" placeholder="https://www.figma.com/design/..." />
+          </div>
+          <button class="btn btn-outline" onclick="startWithRepo()">Connect &amp; Chat →</button>
+        </div>
+
       </div>
-
-      <form id="repoForm" onsubmit="return false;">
-        <div class="field">
-          <label>Repository URL <span class="required">*</span></label>
-          <input id="repoUrl" type="text" placeholder="https://github.com/myorg/my-awesome-app" required />
-          <div class="hint">💡 Tip: Use HTTPS URL from the 'Code' button on your repository</div>
-        </div>
-
-        <div class="field">
-          <label>Project Name</label>
-          <input id="projectName" type="text" placeholder="my-awesome-app" />
-          <div class="hint">Optional. Will be auto-populated from GitHub URL if not provided.</div>
-        </div>
-
-        <div class="field">
-          <label>Default Branch</label>
-          <input id="branchName" type="text" placeholder="non-prod" />
-          <div class="hint">Optional. Defaults to 'non-prod' if not specified.</div>
-        </div>
-
-        <div class="field">
-          <label>Repository Path</label>
-          <input id="repoPath" type="text" placeholder="" />
-          <div class="hint">Auto-generated from GitHub URL. This is where the repository will be cloned.</div>
-        </div>
-
-        <div class="field">
-          <label>Figma Design URL <span style="font-weight:400;color:var(--text-hint)">(optional)</span></label>
-          <input id="figmaUrl" type="text" placeholder="https://www.figma.com/design/..." />
-          <div class="hint">💡 Paste your Figma file URL to enable design analysis.</div>
-        </div>
-
-        <div class="actions">
-          <button class="btn" id="cancelBtn" type="button">Cancel</button>
-          <button class="btn" id="createBtn" type="button">Create Project</button>
-        </div>
-      </form>
     </div>
 
+    <!-- ── Screen 2: Chat ── -->
     <div id="screen2" class="card hidden" style="margin-top:20px;">
       <div class="chat-header">
         <div>
-          <h1 class="title">Agent Chat</h1>
+          <h1 style="font-size:22px;font-weight:700;margin:0 0 2px">Agent Chat</h1>
+          <div id="headerSub" style="font-size:13px;color:var(--text-hint)"></div>
         </div>
         <div class="pills">
-          <div class="pill" id="pillProject">Project: -</div>
-          <div class="pill" id="pillBranch">Branch: -</div>
+          <div class="pill" id="pillProject" style="display:none"></div>
+          <div class="pill" id="pillBranch" style="display:none"></div>
+          <button class="pill-link" onclick="showScreen(1)" style="font-size:13px;background:none;border:none;cursor:pointer;color:var(--text-hint)">← Back</button>
         </div>
       </div>
 
@@ -165,7 +172,7 @@
           </div>
           <div id="uploadBadge" style="display:none;padding:0 4px 6px"></div>
           <div class="chat-input">
-            <input id="chatInput" type="text" placeholder="Type your message or use a button above…" />
+            <input id="chatInput" type="text" placeholder="Type a message or use a button above…" />
             <button class="upload-btn" id="uploadBtn" title="Upload API document (.txt, .md, .docx)">📎</button>
             <input type="file" id="fileInput" accept=".txt,.md,.docx,.doc" style="display:none" />
             <button class="send-btn" id="sendBtn">Send</button>
@@ -176,64 +183,72 @@
   </div>
 
   <script>
-    // Helpers
     const el = id => document.getElementById(id);
-    const nowTime = () => {
-      const d = new Date();
-      return d.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
-    }
+    const nowTime = () => new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
 
-    // Auto-fill logic
-    el('repoUrl').addEventListener('input', e=>{
-      const v = e.target.value.trim();
-      if(!v) return;
-      try{
-        // extract last path element
-        let p = v.replace(/\.git$/,'').replace(/\/+$/,'');
-        const parts = p.split('/');
-        const name = parts[parts.length-1] || '';
-        if(name && !el('projectName').value) el('projectName').value = name;
-        if(name) el('repoPath').value = '/tmp/repos/' + name;
-      }catch(err){}
+    // Session state
+    let currentGithubUrl = '';
+    let currentProjectName = '';
+    let pendingAgentType = null; // deferred command waiting for a GitHub URL
+
+    // Auto-fill project name from GitHub URL
+    el('repoUrl').addEventListener('input', e => {
+      const v = e.target.value.trim().replace(/\.git$/, '').replace(/\/+$/, '');
+      if (!v) return;
+      const name = v.split('/').filter(Boolean).pop() || '';
+      if (name && !el('projectName').value) el('projectName').value = name;
     });
 
-    // Screen switching
-    function showScreen(n){
-      el('screen1').classList.toggle('hidden', n!==1);
-      el('screen2').classList.toggle('hidden', n!==2);
+    // ── Screen switching ───────────────────────────────────────────────────
+    function showScreen(n) {
+      el('screen1').classList.toggle('hidden', n !== 1);
+      el('screen2').classList.toggle('hidden', n !== 2);
     }
 
-    // Create project behavior
-    el('createBtn').addEventListener('click', ()=>{
-      const url = el('repoUrl').value.trim();
-      if(!url){
-        alert('Repository URL is required');
-        return;
+    function startChatDirectly() {
+      currentGithubUrl = '';
+      currentProjectName = 'Chat Session';
+      _enterChat(false);
+    }
+
+    function startWithRepo() {
+      currentGithubUrl = el('repoUrl').value.trim();
+      const nameInput = el('projectName').value.trim();
+      currentProjectName = nameInput || (currentGithubUrl.split('/').filter(Boolean).pop() || 'Project');
+      _enterChat(true);
+    }
+
+    function _enterChat(hasRepo) {
+      const pillP = el('pillProject');
+      const pillB = el('pillBranch');
+      if (currentProjectName && currentProjectName !== 'Chat Session') {
+        pillP.textContent = 'Project: ' + currentProjectName;
+        pillP.style.display = '';
+      } else {
+        pillP.style.display = 'none';
       }
-      const proj = el('projectName').value.trim() || (url.split('/').filter(Boolean).pop()||'project');
-      const branch = el('branchName').value.trim() || 'non-prod';
-      el('pillProject').textContent = 'Project: ' + proj + '.iam';
-      el('pillBranch').textContent = 'Branch: ' + (branch || 'main');
+      pillB.style.display = 'none';
+
+      el('headerSub').textContent = hasRepo && currentGithubUrl
+        ? 'Connected: ' + currentGithubUrl
+        : 'No repository connected — share GitHub URL in chat if needed';
+
       showScreen(2);
-      // show initial agent message
-      addAgentWelcome(proj);
-    });
+      addAgentWelcome(hasRepo);
+    }
 
-    el('cancelBtn').addEventListener('click', ()=>{
-      el('repoForm').reset();
-    });
-
-    // Chat logic
+    // ── Chat messages ──────────────────────────────────────────────────────
     const chatArea = el('chatArea');
-    function addMessage(from='user', text='', meta=''){
+
+    function addMessage(from = 'user', text = '', meta = '') {
       const wrap = document.createElement('div');
       wrap.className = 'message';
-      const avatar = document.createElement('div'); avatar.className='avatar';
-      avatar.textContent = from==='agent' ? '🤖' : '👤';
-      const content = document.createElement('div'); content.className='msg-content';
-      const txt = document.createElement('div'); txt.className='msg-text'; txt.innerHTML = text;
+      const avatar = document.createElement('div'); avatar.className = 'avatar';
+      avatar.textContent = from === 'agent' ? '🤖' : '👤';
+      const content = document.createElement('div'); content.className = 'msg-content';
+      const txt = document.createElement('div'); txt.className = 'msg-text'; txt.innerHTML = text;
       content.appendChild(txt);
-      const ts = document.createElement('div'); ts.className='timestamp'; ts.textContent = meta || nowTime();
+      const ts = document.createElement('div'); ts.className = 'timestamp'; ts.textContent = meta || nowTime();
       content.appendChild(ts);
       wrap.appendChild(avatar); wrap.appendChild(content);
       chatArea.appendChild(wrap);
@@ -241,125 +256,92 @@
       return wrap;
     }
 
-    function addAgentWelcome(project){
-      const lines = [];
-      lines.push('🌿 Welcome to Project Assistant for project `' + project + '`');
-      const figma = el('figmaUrl').value.trim();
-      const figmaLine = figma ? '\n• <strong>analyze figma design</strong> — planning doc from your Figma design' : '';
-      lines.push('Available commands:\n• <strong>analyze this repository</strong> — repository overview\n• <strong>create a plan</strong> — project planning document\n• <strong>plan features</strong> — feature proposals with effort estimates' + figmaLine);
-      addMessage('agent', lines.join('\n\n'), nowTime());
+    function addAgentWelcome(hasRepo) {
+      const repoLine = hasRepo && currentGithubUrl
+        ? '<br>• <strong>analyze this repository</strong> — repository overview<br>• <strong>create a plan</strong> — project planning document<br>• <strong>plan features</strong> — feature proposals with effort estimates'
+        : '<br>• <strong>analyze this repository</strong>, <strong>create a plan</strong>, <strong>plan features</strong> — I\'ll ask for your GitHub URL when you use these';
+      const figmaLine = el('figmaUrl').value.trim()
+        ? '<br>• <strong>analyze figma design</strong> — planning doc from your Figma design ✅'
+        : '<br>• <strong>analyze figma design</strong> — paste a Figma URL when prompted';
+
+      addMessage('agent', [
+        hasRepo && currentProjectName !== 'Chat Session'
+          ? '🌿 <strong>Project Assistant</strong> — ' + currentProjectName
+          : '🌿 <strong>Context Engineering Agent</strong> — Chat mode',
+        '',
+        'What I can help with:' + repoLine + figmaLine,
+        '',
+        'Use the buttons above or type a command to get started.',
+      ].join('\n'), nowTime());
     }
 
-    // Simple markdown renderer per spec
-    function renderMarkdown(md){
-      if(!md) return '';
-      // escape html
+    // ── Markdown renderer ──────────────────────────────────────────────────
+    function renderMarkdown(md) {
+      if (!md) return '';
       md = md.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-      // code block
-      md = md.replace(/```([\s\S]*?)```/g, (m,code)=>{
-        return '<pre><code>' + code.replace(/&lt;br&gt;/g,'\n') + '</code></pre>';
-      });
-      // headings
+      md = md.replace(/```([\s\S]*?)```/g, (m, code) => '<pre><code>' + code + '</code></pre>');
       md = md.replace(/^###\s*(.*)$/gm, '<h3>$1</h3>');
-      md = md.replace(/^##\s*(.*)$/gm, '<h2>$1</h2>');
-      md = md.replace(/^#\s*(.*)$/gm, '<h1>$1</h1>');
-      // bold
+      md = md.replace(/^##\s*(.*)$/gm,  '<h2>$1</h2>');
+      md = md.replace(/^#\s*(.*)$/gm,   '<h1>$1</h1>');
       md = md.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-      // inline code
       md = md.replace(/`([^`]+)`/g, '<code>$1</code>');
-      // lists
       md = md.replace(/^\s*-\s+(.*)$/gm, '<li>$1</li>');
-      md = md.replace(/(<li>[\s\S]*?<\/li>)/g, m=> '<ul>'+m+'</ul>');
+      md = md.replace(/(<li>[\s\S]*?<\/li>)/g, m => '<ul>' + m + '</ul>');
       md = md.replace(/^\s*\d+\.\s+(.*)$/gm, '<li>$1</li>');
-      md = md.replace(/(<li>[\s\S]*?<\/li>)/g, m=> '<ol>'+m+'</ol>');
-      // paragraphs and double breaks
       md = md.replace(/\n\n/g, '<br><br>');
-      // single line breaks stay
       return md;
     }
 
-    // Figma conversation state
-    // null
-    // { phase:'awaiting_figma_url' }
-    // { phase:'awaiting_endpoints', designSummary, designName }
-    // { phase:'awaiting_requirements', designSummary, designName, endpoints }
+    // ── Figma conversation state ───────────────────────────────────────────
+    // null | { phase, ...data }
+    // phases: awaiting_figma_url | awaiting_endpoints | awaiting_requirements | awaiting_github_url
     let figmaState = null;
-
-    // Uploaded API document: null or { filename, text, charCount }
     let uploadedApiDoc = null;
 
-    function setUploadBadge(doc){
+    function setUploadBadge(doc) {
       const badge = el('uploadBadge');
-      if(!doc){ badge.style.display='none'; badge.innerHTML=''; return; }
-      badge.style.display='block';
-      badge.innerHTML = '<span class="upload-badge">📄 ' + doc.filename + ' (' + doc.charCount.toLocaleString() + ' chars) <span style="cursor:pointer;margin-left:4px" id="clearDoc">✕</span></span>';
+      if (!doc) { badge.style.display = 'none'; badge.innerHTML = ''; return; }
+      badge.style.display = 'block';
+      badge.innerHTML = '<span class="upload-badge">📄 ' + doc.filename + ' (' + doc.char_count.toLocaleString() + ' chars) <span style="cursor:pointer;margin-left:4px" id="clearDoc">✕</span></span>';
       el('clearDoc').onclick = () => { uploadedApiDoc = null; setUploadBadge(null); };
     }
 
-    // File upload handler
+    // File upload
     el('uploadBtn').addEventListener('click', () => el('fileInput').click());
-
-    el('fileInput').addEventListener('change', async (e) => {
-      const file = e.target.files[0];
-      e.target.value = '';
-      if(!file) return;
-
-      const thinkingWrap = addMessage('agent','<div class="dots"><span></span><span></span><span></span></div>', nowTime());
-      const form = new FormData();
-      form.append('file', file);
-
-      try{
-        const res = await fetch('/api/upload-api-doc', { method:'POST', body: form });
-        const data = await res.json();
-        thinkingWrap.remove();
-
-        if(data.status !== 'success'){
-          addMessage('agent', '❌ Upload failed: ' + (data.message||'Unknown error'), nowTime());
-          return;
-        }
-
-        uploadedApiDoc = { filename: data.filename, text: data.text, charCount: data.char_count };
+    el('fileInput').addEventListener('change', async e => {
+      const file = e.target.files[0]; e.target.value = '';
+      if (!file) return;
+      const tw = addMessage('agent', '<div class="dots"><span></span><span></span><span></span></div>', nowTime());
+      const form = new FormData(); form.append('file', file);
+      try {
+        const res = await fetch('/api/upload-api-doc', { method: 'POST', body: form });
+        const data = await res.json(); tw.remove();
+        if (data.status !== 'success') { addMessage('agent', '❌ Upload failed: ' + (data.message || 'Unknown error'), nowTime()); return; }
+        uploadedApiDoc = { filename: data.filename, text: data.text, char_count: data.char_count };
         setUploadBadge(uploadedApiDoc);
-
         const hint = figmaState && figmaState.phase === 'awaiting_endpoints'
-          ? 'Type <strong>proceed</strong> (or anything) in chat and I\'ll generate the Angular 22 planning document using this file.'
-          : 'Run <strong>analyze figma design</strong> to use this document when generating your Angular 22 planning document.';
-
-        addMessage('agent',
-          '📄 <strong>API document uploaded:</strong> ' + data.filename + '<br>' +
-          data.char_count.toLocaleString() + ' characters read successfully.<br><br>' + hint,
-          nowTime()
-        );
-      }catch(err){
-        thinkingWrap.remove();
-        addMessage('agent','❌ Upload failed: ' + err.message, nowTime());
-      }
+          ? 'Type <strong>proceed</strong> in chat and I\'ll generate the Angular 22 planning documents using this file.'
+          : 'Run <strong>analyze figma design</strong> to use this when generating planning documents.';
+        addMessage('agent', '📄 <strong>API document uploaded:</strong> ' + data.filename + '<br>' + data.char_count.toLocaleString() + ' characters read.<br><br>' + hint, nowTime());
+      } catch (err) { tw.remove(); addMessage('agent', '❌ Upload failed: ' + err.message, nowTime()); }
     });
 
-    function addDownloadBtn(wrap, content, filename){
+    // Download button helper
+    function addDownloadBtn(wrap, content, filename) {
       const btn = document.createElement('button');
       btn.textContent = 'Download .md';
       btn.style.cssText = 'margin:10px 0 4px;padding:8px 18px;background:#1a1a1a;color:#fff;border:none;border-radius:20px;font-size:13px;cursor:pointer;';
       btn.onclick = () => {
-        const blob = new Blob([content], {type:'text/markdown'});
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = filename;
-        a.click();
-        URL.revokeObjectURL(a.href);
+        const blob = new Blob([content], { type: 'text/markdown' });
+        const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = filename; a.click(); URL.revokeObjectURL(a.href);
       };
       wrap.querySelector('.msg-content').appendChild(btn);
     }
 
-    function showError(thinkingWrap, msg, detail){
-      thinkingWrap.remove();
-      const full = '❌ Error: ' + msg + (detail ? '\n\nDetail: ' + detail : '');
-      addMessage('agent', full, nowTime());
-    }
-
-    async function handleFigmaAnalyze(figmaUrlOverride){
+    // ── Figma flow ─────────────────────────────────────────────────────────
+    async function handleFigmaAnalyze(figmaUrlOverride) {
       const figmaUrl = figmaUrlOverride || el('figmaUrl').value.trim();
-      if(!figmaUrl){
+      if (!figmaUrl) {
         figmaState = { phase: 'awaiting_figma_url' };
         addMessage('agent', '🎨 <strong>Figma Design URL needed.</strong><br><br>Please paste your Figma file URL (e.g. <code>https://www.figma.com/design/...</code>):', nowTime());
         return;
@@ -367,276 +349,298 @@
 
       const uid = 'analyze_' + Date.now();
       const wrap = addMessage('agent',
-        '🎨 <strong>Analyzing Figma design…</strong><br><span id="' + uid + '" style="color:#888;font-size:13px">Fetching file…</span>',
-        nowTime()
-      );
+        '🎨 <strong>Analyzing Figma design…</strong><br><span id="' + uid + '" style="color:#888;font-size:13px">Fetching file…</span>', nowTime());
       const statusEl = () => document.getElementById(uid);
 
       let jobId;
-      try{
-        const res = await fetch('/api/figma/analyze',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({figma_url:figmaUrl})});
+      try {
+        const res = await fetch('/api/figma/analyze', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ figma_url: figmaUrl }) });
         const data = await res.json();
-        if(data.status !== 'started'){ wrap.remove(); addMessage('agent','❌ '+(data.message||'Failed to start'), nowTime()); return; }
+        if (data.status !== 'started') { wrap.remove(); addMessage('agent', '❌ ' + (data.message || 'Failed to start analysis'), nowTime()); return; }
         jobId = data.job_id;
-      }catch(err){
-        wrap.remove(); addMessage('agent','❌ Could not connect to server.\n'+err.message, nowTime()); return;
-      }
+      } catch (err) { wrap.remove(); addMessage('agent', '❌ Could not connect to server.\n' + err.message, nowTime()); return; }
 
       const spinner = ['⠋','⠙','⠹','⠸','⠼','⠴','⠦','⠧','⠇','⠏'];
       let dots = 0;
-      while(true){
+      while (true) {
         await new Promise(r => setTimeout(r, 1500));
-        try{
+        try {
           const r = await fetch('/api/figma/job/' + jobId);
           const d = await r.json();
-          if(d.status === 'done'){
+          if (d.status === 'done') {
             wrap.remove();
             const result = d.result;
-            figmaState = { phase:'awaiting_endpoints', designSummary: result.design_summary, designName: result.design_name };
+            figmaState = { phase: 'awaiting_endpoints', designSummary: result.design_summary, designName: result.design_name };
             const alreadyUploaded = uploadedApiDoc
               ? '<br><br>✅ Already uploaded: <strong>' + uploadedApiDoc.filename + '</strong>. Type <strong>proceed</strong> to use it.'
               : '';
             addMessage('agent', [
               '<strong>✅ Figma Design Analyzed: ' + result.design_name + '</strong> (' + result.screen_count + ' screens)',
               '',
-              'Screens found in your design:',
+              result.suggested_endpoints,
               '',
-              '<pre style="background:#f5f5f5;padding:12px;border-radius:8px;font-size:13px;overflow:auto">' + result.suggested_endpoints + '</pre>',
+              '<strong>Now provide the API details:</strong>',
+              '• <strong>Type</strong> your endpoints or paste an API spec in the chat, or',
+              '• Click <strong>📎</strong> to upload a Word/text document with full API details.',
               '',
-              '<strong>Now tell me the exact API details to use:</strong>',
-              '• <strong>Type</strong> your endpoints or paste an API spec directly in the chat, or',
-              '• Click the <strong>📎</strong> button to upload a Word or text document with full API details.',
-              '',
-              'Once I have the API details, I\'ll generate the complete Angular 22.0.0 planning documents.' + alreadyUploaded,
+              'Once I have the API details I\'ll generate complete Angular 22.0.0 planning documents.' + alreadyUploaded,
             ].join('\n'), nowTime());
             return;
           }
-          if(d.status === 'error'){
-            wrap.remove();
-            addMessage('agent', '❌ Figma analysis failed: ' + (d.error||'Unknown error'), nowTime());
-            return;
-          }
+          if (d.status === 'error') { wrap.remove(); addMessage('agent', '❌ Analysis failed: ' + (d.error || 'Unknown error'), nowTime()); return; }
           const spin = spinner[dots++ % spinner.length];
-          const elapsed = d.tick > 0 ? ' — ' + (d.tick * 2) + 's' : '';
-          statusEl().textContent = spin + ' Analyzing' + elapsed + '…';
-        }catch(err){
-          wrap.remove(); addMessage('agent','❌ Poll failed: '+err.message, nowTime()); return;
-        }
+          statusEl().textContent = spin + ' Analyzing' + (d.tick > 0 ? ' — ' + (d.tick * 2) + 's' : '') + '…';
+        } catch (err) { wrap.remove(); addMessage('agent', '❌ Poll failed: ' + err.message, nowTime()); return; }
       }
     }
 
-    async function handleEndpointsInput(typedText){
+    async function handleEndpointsInput(typedText) {
       const endpoints = uploadedApiDoc ? uploadedApiDoc.text : typedText;
       const { designSummary, designName } = figmaState;
-
-      // Transition to requirements phase
-      figmaState = { phase:'awaiting_requirements', designSummary, designName, endpoints };
-      uploadedApiDoc = null;
-      setUploadBadge(null);
+      figmaState = { phase: 'awaiting_requirements', designSummary, designName, endpoints };
+      uploadedApiDoc = null; setUploadBadge(null);
 
       addMessage('agent', [
-        '✅ <strong>API details captured.</strong> Before I generate the planning documents, two quick questions:',
+        '✅ <strong>API details captured.</strong> Two quick optional questions:',
         '',
         '<strong>1. Reference repository (optional)</strong>',
-        'Do you have an existing GitHub repo with architecture patterns you want me to follow? If yes, paste the URL — I\'ll clone it and read the structure.',
+        'Paste a GitHub URL if you want me to follow its existing architecture patterns.',
         '',
-        '<strong>2. Architecture & design requirements (optional)</strong>',
-        'Any specific requirements? Examples:',
-        '<ul style="margin:6px 0 0 16px;color:#555">',
-        '<li>Use NgRx for state management instead of signals</li>',
-        '<li>Follow atomic design (atoms / molecules / organisms)</li>',
-        '<li>No Angular Material — use Tailwind CSS instead</li>',
-        '<li>The app must support offline mode</li>',
-        '<li>Multi-tenant — all API calls must include an X-Tenant-ID header</li>',
-        '</ul>',
+        '<strong>2. Architecture &amp; design requirements (optional)</strong>',
+        'Be specific — vague instructions are ignored. Good examples:',
+        '<div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:8px 12px;font-size:12px;color:#334155;line-height:1.8;margin:4px 0">Chart library: ngx-charts<br>Currency: USD, 2 decimal places, $ prefix<br>Date format: MM/DD/YYYY<br>Auth: skip for now<br>Color theme: Angular Material Indigo/Pink</div>',
+        'Or just name deviations: <em>NgRx instead of signals · Tailwind instead of Material · offline support · multi-tenant X-Tenant-ID header</em>',
         '',
-        'Type both answers below. To skip both, type <strong>proceed</strong>.',
+        'Type your answers below (reference URL and/or requirements). To skip, type <strong>proceed</strong>.',
       ].join('\n'), nowTime());
     }
 
-    async function handleRequirementsInput(text){
+    async function handleRequirementsInput(text) {
       const { designSummary, designName, endpoints } = figmaState;
       figmaState = null;
 
-      // Extract GitHub URL from text if present
       const urlMatch = text.match(/https:\/\/github\.com\/[^\s]+/);
-      const repoUrl = urlMatch ? urlMatch[0].replace(/[.,;)]$/, '') : null;
-      const requirements = text.replace(repoUrl || '', '').replace(/\bproceed\b/i, '').trim() || '';
+      const repoUrl = urlMatch ? urlMatch[0].replace(/[.,;)]$/, '') : currentGithubUrl || null;
+      const requirements = text.replace(repoUrl || '', '').replace(/\bproceed\b/i, '').trim();
 
       let repoContext = '';
-      if(repoUrl){
-        const tw = addMessage('agent','<div class="dots"><span></span><span></span><span></span></div> Reading repository…', nowTime());
-        try{
-          const r = await fetch('/api/figma/read-repo',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({github_url:repoUrl})});
-          const d = await r.json();
-          tw.remove();
-          if(d.status==='success'){
-            repoContext = d.context;
-            addMessage('agent','✅ Repository read: <strong>' + repoUrl + '</strong>. I\'ll use its architecture patterns in the documents.', nowTime());
-          } else {
-            addMessage('agent','⚠️ Could not read repository: ' + d.message + '. Continuing without it.', nowTime());
-          }
-        }catch(e){
-          tw.remove();
-          addMessage('agent','⚠️ Could not reach the repository. Continuing without it.', nowTime());
-        }
+      if (repoUrl) {
+        const tw = addMessage('agent', '<div class="dots"><span></span><span></span><span></span></div> Reading repository…', nowTime());
+        try {
+          const r = await fetch('/api/figma/read-repo', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ github_url: repoUrl }) });
+          const d = await r.json(); tw.remove();
+          if (d.status === 'success') { repoContext = d.context; addMessage('agent', '✅ Repository read: <strong>' + repoUrl + '</strong>. Architecture patterns loaded.', nowTime()); }
+          else addMessage('agent', '⚠️ Could not read repository: ' + d.message + '. Continuing without it.', nowTime());
+        } catch (e) { tw.remove(); addMessage('agent', '⚠️ Could not reach the repository. Continuing without it.', nowTime()); }
       }
 
-      addMessage('agent', '📋 Generating 3 planning documents for <strong>' + designName + '</strong>. Each will appear below as it completes.', nowTime());
+      addMessage('agent', '📋 Generating 3 planning documents for <strong>' + designName + '</strong>. Each will appear as it completes.', nowTime());
 
       const docs = [
-        { type:1, title:'Project Overview & Architecture',        filename:'doc1-project-overview.md' },
-        { type:2, title:'Screens, Components & User Flows',       filename:'doc2-screens-components.md' },
-        { type:3, title:'API, Data Models & Implementation Guide',filename:'doc3-api-implementation.md' },
+        { type: 1, title: 'Project Overview & Architecture',         filename: 'doc1-project-overview.md' },
+        { type: 2, title: 'Screens, Components & User Flows',        filename: 'doc2-screens-components.md' },
+        { type: 3, title: 'API, Data Models & Implementation Guide', filename: 'doc3-api-implementation.md' },
       ];
-
-      for(const doc of docs){
-        await generateDoc(doc, designSummary, designName, endpoints, repoContext, requirements);
-      }
+      for (const doc of docs) await generateDoc(doc, designSummary, designName, endpoints, repoContext, requirements);
+      showImplementationGuide(designName);
     }
 
-    async function generateDoc(doc, designSummary, designName, endpoints, repoContext, requirements){
+    async function generateDoc(doc, designSummary, designName, endpoints, repoContext, requirements) {
       const uid = 'doc_' + doc.type + '_' + Date.now();
       const wrap = addMessage('agent',
         '<strong>📄 Document ' + doc.type + ' of 3 — ' + doc.title + '</strong><br>'
-        + '<span id="' + uid + '" style="color:#888;font-size:13px">Starting…</span>',
-        nowTime()
-      );
-
+        + '<span id="' + uid + '" style="color:#888;font-size:13px">Starting…</span>', nowTime());
       const statusEl = () => document.getElementById(uid);
 
-      // Start background job
       let jobId;
-      try{
+      try {
         const res = await fetch('/api/figma/generate', {
-          method: 'POST',
-          headers: {'Content-Type':'application/json'},
-          body: JSON.stringify({
-            design_summary: designSummary,
-            design_name: designName,
-            endpoints,
-            doc_type: doc.type,
-            repo_context: repoContext,
-            user_requirements: requirements,
-          })
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ design_summary: designSummary, design_name: designName, endpoints, doc_type: doc.type, repo_context: repoContext, user_requirements: requirements })
         });
         const data = await res.json();
-        if(data.status !== 'started'){ statusEl().textContent = '❌ ' + (data.message||'Failed to start'); return; }
+        if (data.status !== 'started') { statusEl().textContent = '❌ ' + (data.message || 'Failed to start'); return; }
         jobId = data.job_id;
-      }catch(err){
-        statusEl().textContent = '❌ ' + err.message; return;
-      }
+      } catch (err) { statusEl().textContent = '❌ ' + err.message; return; }
 
-      // Poll until done
       let dots = 0;
       const spinner = ['⠋','⠙','⠹','⠸','⠼','⠴','⠦','⠧','⠇','⠏'];
-      while(true){
+      while (true) {
         await new Promise(r => setTimeout(r, 1500));
-        try{
+        try {
           const r = await fetch('/api/figma/job/' + jobId);
           const d = await r.json();
-
-          if(d.status === 'done'){
+          if (d.status === 'done') {
             statusEl().textContent = '✅ Done — ' + d.words.toLocaleString() + ' words';
             addDownloadBtn(wrap, d.text, doc.filename);
             chatArea.scrollTop = chatArea.scrollHeight;
             return;
           }
-          if(d.status === 'error'){
-            statusEl().textContent = '❌ ' + (d.error || 'Unknown error');
-            return;
-          }
-          // Still running — show elapsed ticks (2s each) as approximate seconds
+          if (d.status === 'error') { statusEl().textContent = '❌ ' + (d.error || 'Unknown error'); return; }
           const spin = spinner[dots++ % spinner.length];
-          const elapsed = d.tick > 0 ? ' — ' + (d.tick * 2) + 's' : '';
-          statusEl().textContent = spin + ' Writing' + elapsed + '…';
-        }catch(err){
-          statusEl().textContent = '❌ Poll failed: ' + err.message; return;
-        }
+          statusEl().textContent = spin + ' Writing' + (d.tick > 0 ? ' — ' + (d.tick * 2) + 's' : '') + '…';
+        } catch (err) { statusEl().textContent = '❌ Poll failed: ' + err.message; return; }
       }
     }
 
-    async function callAnalyze(github_url, agent_type){
-      const body = { agent_type, options: {}, github_url };
-      const res = await fetch('/api/analyze',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
-      return res.json();
+    // ── Implementation guide shown after all 3 docs are ready ─────────────
+    function copyPrompt() {
+      const text = 'I have placed 3 planning documents inside the "Planning Documents" folder in this project. Read all 3 documents step by step in order (Document 1 → Document 2 → Document 3) and implement the Angular application exactly as described. Start with the bootstrap instructions in Document 1. Do not skip any step. Do not ask questions — the planning documents are the single source of truth.';
+      const btn = el('implCopyBtn');
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(text).then(() => { if (btn) { btn.textContent = 'Copied!'; setTimeout(() => btn.textContent = 'Copy', 2000); } });
+      } else {
+        const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+        if (btn) { btn.textContent = 'Copied!'; setTimeout(() => btn.textContent = 'Copy', 2000); }
+      }
     }
 
-    // Send handler
-    async function sendMessage(){
+    function showImplementationGuide(designName) {
+      const claudePrompt = `I have placed 3 planning documents inside the "Planning Documents" folder in this project. Read all 3 documents step by step in order (Document 1 → Document 2 → Document 3) and implement the Angular application exactly as described. Start with the bootstrap instructions in Document 1. Do not skip any step. Do not ask questions — the planning documents are the single source of truth.`;
+
+      const html = `
+<div style="background:#f0fdf4;border:1.5px solid #86efac;border-radius:12px;padding:18px 20px">
+  <div style="font-size:15px;font-weight:700;color:#15803d;margin-bottom:4px">🎉 Your 3 planning documents are ready — here's what to do next</div>
+  <div style="font-size:13px;color:#555;margin-bottom:18px;line-height:1.5">Follow these 2 steps to implement the full Angular application.</div>
+
+  <div style="display:flex;flex-direction:column;gap:12px;font-size:13px;line-height:1.6">
+
+    <div style="background:#fff;border:1px solid #d1fae5;border-radius:10px;padding:14px 16px">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+        <div style="background:#15803d;color:#fff;border-radius:50%;width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0">1</div>
+        <div style="font-weight:700;font-size:14px">Add the documents to your Angular project</div>
+      </div>
+      <div style="color:#444;margin-bottom:10px">
+        Inside your Angular project root, create a folder named <strong>Planning Documents</strong> and move all 3 downloaded files into it:
+      </div>
+      <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:7px;padding:10px 14px;font-family:monospace;font-size:12px;color:#334155;line-height:2">
+        📁 your-angular-project/<br>
+        &nbsp;&nbsp;&nbsp;📂 <strong>Planning Documents</strong>/<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;📄 doc1-project-overview.md<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;📄 doc2-screens-components.md<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;📄 doc3-api-implementation.md
+      </div>
+    </div>
+
+    <div style="background:#fff;border:1px solid #d1fae5;border-radius:10px;padding:14px 16px">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+        <div style="background:#15803d;color:#fff;border-radius:50%;width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0">2</div>
+        <div style="font-weight:700;font-size:14px">Run this prompt in Claude Code or GitHub Copilot</div>
+      </div>
+      <div style="color:#444;margin-bottom:10px">
+        Open your project in <strong>Claude Code</strong> (run <code style="background:#f1f5f9;padding:2px 6px;border-radius:4px">claude</code> in terminal) or <strong>GitHub Copilot Chat</strong> in VS Code, then send this prompt:
+      </div>
+      <div style="background:#1e293b;border-radius:8px;padding:12px 14px;position:relative">
+        <div style="color:#e2e8f0;font-size:12px;line-height:1.8;padding-right:56px">${claudePrompt}</div>
+        <button id="implCopyBtn" onclick="copyPrompt()" style="position:absolute;top:10px;right:10px;background:#334155;color:#e2e8f0;border:none;border-radius:6px;padding:5px 11px;font-size:11px;cursor:pointer" onmouseover="this.style.background='#475569'" onmouseout="this.style.background='#334155'">Copy</button>
+      </div>
+      <div style="color:#888;font-size:12px;margin-top:8px">Claude Code / Copilot will read the documents in order and implement the app step by step — no further input needed from you.</div>
+    </div>
+
+  </div>
+</div>`;
+
+      addMessage('agent', html, nowTime());
+    }
+
+    // ── Main send handler ──────────────────────────────────────────────────
+    async function sendMessage() {
       const text = el('chatInput').value.trim();
-      if(!text) return;
+      if (!text) return;
       addMessage('user', text, nowTime());
-      el('chatInput').value='';
+      el('chatInput').value = '';
 
-      if(figmaState && figmaState.phase === 'awaiting_figma_url'){
+      // Figma state machine
+      if (figmaState && figmaState.phase === 'awaiting_figma_url') {
+        figmaState = null; el('figmaUrl').value = text;
+        await handleFigmaAnalyze(text); return;
+      }
+      if (figmaState && figmaState.phase === 'awaiting_endpoints') {
+        await handleEndpointsInput(text); return;
+      }
+      if (figmaState && figmaState.phase === 'awaiting_requirements') {
+        await handleRequirementsInput(text); return;
+      }
+
+      // Deferred command waiting for GitHub URL
+      if (figmaState && figmaState.phase === 'awaiting_github_url') {
+        const urlMatch = text.match(/https?:\/\/[^\s]+/);
+        if (text.toLowerCase() === 'skip' || text.toLowerCase() === 'cancel') {
+          figmaState = null; pendingAgentType = null;
+          addMessage('agent', 'Cancelled. Use the buttons above to try another command.', nowTime()); return;
+        }
+        if (!urlMatch) {
+          addMessage('agent', 'That doesn\'t look like a URL. Please paste your GitHub repository URL, or type <strong>skip</strong> to cancel.', nowTime()); return;
+        }
+        currentGithubUrl = urlMatch[0].replace(/[.,;)]$/, '');
+        el('headerSub').textContent = 'Connected: ' + currentGithubUrl;
+        const savedType = figmaState.pendingCmd;
         figmaState = null;
-        el('figmaUrl').value = text;
-        await handleFigmaAnalyze(text);
-        return;
-      }
-      if(figmaState && figmaState.phase === 'awaiting_endpoints'){
-        await handleEndpointsInput(text);
-        return;
-      }
-      if(figmaState && figmaState.phase === 'awaiting_requirements'){
-        await handleRequirementsInput(text);
-        return;
+        addMessage('agent', '✅ GitHub URL saved: <strong>' + currentGithubUrl + '</strong>. Running your command…', nowTime());
+        await runRepoCommand(savedType); return;
       }
 
-      // Normal command routing
+      // Normal routing
       const cmd = text.toLowerCase().trim();
-      if(cmd.includes('figma')){
-        await handleFigmaAnalyze();
-        return;
-      }
+      if (cmd.includes('figma')) { await handleFigmaAnalyze(); return; }
 
       let agent_type = null;
-      if(cmd==='analyze this repository' || cmd==='create documentation' || cmd.includes('analyze') && cmd.includes('repo')) agent_type='snapshot';
-      else if(cmd==='create a plan' || (cmd.includes('plan') && !cmd.includes('feature'))) agent_type='planning';
-      else if(cmd==='plan features' || cmd.includes('feature')) agent_type='feature';
-      else {
-        addMessage('agent', [
-          'Use the buttons above or type one of these commands:',
-          '• <strong>analyze this repository</strong>',
-          '• <strong>create a plan</strong>',
-          '• <strong>plan features</strong>',
-          '• <strong>analyze figma design</strong>',
-        ].join('<br>'), nowTime());
+      if (cmd.includes('analyze') && (cmd.includes('repo') || cmd === 'analyze this repository')) agent_type = 'snapshot';
+      else if (cmd === 'create a plan' || (cmd.includes('plan') && !cmd.includes('feature') && !cmd.includes('figma'))) agent_type = 'planning';
+      else if (cmd === 'plan features' || cmd.includes('feature')) agent_type = 'feature';
+
+      if (agent_type) {
+        if (!currentGithubUrl) {
+          figmaState = { phase: 'awaiting_github_url', pendingCmd: agent_type };
+          addMessage('agent', [
+            '🔗 <strong>GitHub URL needed for this command.</strong>',
+            '',
+            'Please paste your GitHub repository URL (e.g. <code>https://github.com/myorg/my-app</code>), or type <strong>skip</strong> to cancel.',
+          ].join('\n'), nowTime());
+          return;
+        }
+        await runRepoCommand(agent_type);
         return;
       }
 
+      addMessage('agent', [
+        'Use the buttons above or type one of these commands:',
+        '• <strong>analyze this repository</strong>',
+        '• <strong>create a plan</strong>',
+        '• <strong>plan features</strong>',
+        '• <strong>analyze figma design</strong>',
+      ].join('<br>'), nowTime());
+    }
+
+    async function runRepoCommand(agent_type) {
       const thinkingWrap = addMessage('agent', '<div class="dots"><span></span><span></span><span></span></div>', nowTime());
-      try{
-        const resp = await callAnalyze(el('repoUrl').value.trim(), agent_type);
+      try {
+        const body = { agent_type, options: {}, github_url: currentGithubUrl };
+        const res = await fetch('/api/analyze', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+        const resp = await res.json();
         thinkingWrap.remove();
-        if(resp.status && resp.status!=='success'){
-          const msg = resp.message || JSON.stringify(resp);
-          const detail = resp.detail ? '\n\nDetail: ' + resp.detail : '';
-          addMessage('agent','❌ Error: '+msg+detail, nowTime());
-          return;
+        if (resp.status && resp.status !== 'success') {
+          addMessage('agent', '❌ Error: ' + (resp.message || JSON.stringify(resp)) + (resp.detail ? '\n\nDetail: ' + resp.detail : ''), nowTime()); return;
         }
-        const body = resp.planning_document || resp.planning || JSON.stringify(resp.sections||resp);
+        const content = resp.planning_document || resp.planning || JSON.stringify(resp.sections || resp);
         const label = agent_type === 'snapshot' ? '🏗️ Repository Overview' : agent_type === 'feature' ? '🧩 Feature Proposals' : '📋 Project Plan';
         const filename = agent_type === 'snapshot' ? 'repository-overview.md' : agent_type === 'feature' ? 'feature-proposals.md' : 'project-plan.md';
-        const html = renderMarkdown(body);
-        const wrap = addMessage('agent','<strong>'+label+'</strong><br><br><div class="markdown">'+html+'</div>', nowTime());
-        addDownloadBtn(wrap, body, filename);
-      }catch(err){
+        const wrap = addMessage('agent', '<strong>' + label + '</strong><br><br><div class="markdown">' + renderMarkdown(content) + '</div>', nowTime());
+        addDownloadBtn(wrap, content, filename);
+      } catch (err) {
         thinkingWrap.remove();
-        addMessage('agent','❌ Could not connect to server. Make sure Flask is running.\n'+err.message, nowTime());
+        addMessage('agent', '❌ Could not connect to server.\n' + err.message, nowTime());
       }
     }
 
-    function quickCmd(cmd){
+    function quickCmd(cmd) {
       el('chatInput').value = cmd;
       sendMessage();
     }
 
     el('sendBtn').addEventListener('click', sendMessage);
-    el('chatInput').addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); sendMessage(); } });
+    el('chatInput').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); sendMessage(); } });
 
-    // init
     showScreen(1);
   </script>
 </body>
