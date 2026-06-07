@@ -1,7 +1,11 @@
 import re
+import time
 import requests
 
 FIGMA_API_BASE = "https://api.figma.com/v1"
+
+# In-memory cache: file_key → figma response dict (persists for the lifetime of the process)
+_cache: dict = {}
 
 
 def extract_file_key(url: str) -> str:
@@ -17,16 +21,43 @@ def validate_figma_url(url: str) -> bool:
     return bool(re.search(r'figma\.com/(?:file|design)/[^/?#]+', url.strip()))
 
 
-def fetch_figma_file(file_key: str, token: str) -> dict:
-    url = f"{FIGMA_API_BASE}/files/{file_key}"
+def fetch_figma_file(file_key: str, token: str, max_retries: int = 2, depth: int = 4) -> dict:
+    cache_key = f"{file_key}:depth{depth}"
+    if cache_key in _cache:
+        return _cache[cache_key]
+
+    # depth=2 fetches pages + their direct children (screens) only — avoids downloading
+    # the entire component tree which can be hundreds of MB for large files.
+    url = f"{FIGMA_API_BASE}/files/{file_key}?depth={depth}"
     headers = {"X-Figma-Token": token}
-    response = requests.get(url, headers=headers, timeout=30)
-    if response.status_code == 403:
-        raise RuntimeError("Invalid Figma token or insufficient access to this file.")
-    if response.status_code == 404:
-        raise RuntimeError("Figma file not found. Check the URL.")
-    response.raise_for_status()
-    return response.json()
+
+    for attempt in range(max_retries):
+        try:
+            response = requests.get(url, headers=headers, timeout=20)
+        except requests.exceptions.Timeout:
+            if attempt < max_retries - 1:
+                continue
+            raise RuntimeError("Figma API timed out. The file may be too large or the API is slow.")
+
+        if response.status_code == 403:
+            raise RuntimeError("Invalid Figma token or insufficient access to this file.")
+        if response.status_code == 404:
+            raise RuntimeError("Figma file not found. Check the URL.")
+        if response.status_code == 429:
+            retry_after = int(response.headers.get("Retry-After", 2 ** (attempt + 1)))
+            if attempt < max_retries - 1:
+                time.sleep(min(retry_after, 10))
+                continue
+            raise RuntimeError(
+                f"Figma API rate limit hit. Please wait {retry_after} seconds and try again."
+            )
+
+        response.raise_for_status()
+        data = response.json()
+        _cache[cache_key] = data
+        return data
+
+    raise RuntimeError("Failed to fetch Figma file after retries.")
 
 
 def _extract_texts(node: dict, depth: int = 0) -> list:

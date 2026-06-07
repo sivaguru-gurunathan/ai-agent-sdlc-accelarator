@@ -1,15 +1,29 @@
 import os
 import json
 import boto3
+from botocore.config import Config
 from botocore.exceptions import BotoCoreError, ClientError
 
+_STREAMING_CONFIG = Config(
+    connect_timeout=10,
+    read_timeout=300,   # 5 min per streaming chunk — never expires mid-generation
+    retries={"max_attempts": 0},
+)
 
-def get_bedrock_client():
+_SYNC_CONFIG = Config(
+    connect_timeout=10,
+    read_timeout=120,
+    retries={"max_attempts": 0},
+)
+
+
+def get_bedrock_client(streaming: bool = False):
     region = os.getenv("AWS_REGION")
     access_key = os.getenv("AWS_ACCESS_KEY_ID")
     secret_key = os.getenv("AWS_SECRET_ACCESS_KEY")
     session_kwargs = {
         "region_name": region,
+        "config": _STREAMING_CONFIG if streaming else _SYNC_CONFIG,
     }
     if access_key and secret_key:
         session_kwargs["aws_access_key_id"] = access_key

@@ -1,6 +1,6 @@
 from dataclasses import dataclass, field
 from typing import Any, Dict, Optional
-from src.utils.github_utils import validate_github_url
+from src.utils.github_utils import validate_github_url, normalize_github_url
 from src.utils.figma_utils import validate_figma_url
 
 
@@ -42,7 +42,8 @@ def validate_request(data: dict) -> AnalyzeRequest:
         if not github_url:
             raise ValueError("Missing required field: github_url")
         if not isinstance(github_url, str) or not validate_github_url(github_url):
-            raise ValueError("Invalid github_url value.")
+            raise ValueError("Invalid github_url value. Use: https://github.com/owner/repo")
+        github_url = normalize_github_url(github_url)
 
     return AnalyzeRequest(
         agent_type=agent_type.strip(),

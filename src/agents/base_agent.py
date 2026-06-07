@@ -14,11 +14,10 @@ class BaseAgent(ABC):
         self.description = description
         self.model_id = model_id
 
-    def invoke_claude(self, prompt: str, system_prompt: str) -> str:
+    def invoke_claude(self, prompt: str, system_prompt: str, max_tokens: int = 1500) -> str:
         client = get_bedrock_client()
         payload = format_messages(prompt, system_prompt)
-        # Use top-level Anthropic request fields required by Bedrock.
-        payload["max_tokens"] = 1500
+        payload["max_tokens"] = max_tokens
         payload["anthropic_version"] = "bedrock-2023-05-31"
         payload["temperature"] = 0.2
         payload["stop_sequences"] = []
@@ -40,6 +39,38 @@ class BaseAgent(ABC):
         except (BotoCoreError, ClientError) as exc:
             logger.exception("Bedrock invocation failed")
             raise RuntimeError(f"Claude invocation failed: {exc}") from exc
+
+    def stream_claude(self, prompt: str, system_prompt: str, max_tokens: int = 4000):
+        """Yield text chunks from Claude as they arrive via Bedrock streaming."""
+        client = get_bedrock_client(streaming=True)
+        payload = format_messages(prompt, system_prompt)
+        payload["max_tokens"] = max_tokens
+        payload["anthropic_version"] = "bedrock-2023-05-31"
+        payload["temperature"] = 0.2
+        payload["stop_sequences"] = []
+        try:
+            response = client.invoke_model_with_response_stream(
+                modelId=self.model_id,
+                contentType="application/json",
+                accept="application/json",
+                body=json.dumps(payload),
+            )
+            event_stream = response.get("body")
+            for event in event_stream:
+                chunk = event.get("chunk")
+                if not chunk:
+                    continue
+                raw = chunk.get("bytes")
+                if not raw:
+                    continue
+                data = json.loads(raw)
+                if data.get("type") == "content_block_delta":
+                    text = data.get("delta", {}).get("text", "")
+                    if text:
+                        yield text
+        except Exception as exc:
+            logger.exception("Bedrock streaming failed")
+            raise RuntimeError(f"Streaming failed: {exc}") from exc
 
     @abstractmethod
     def run(self, input_data: dict) -> dict:
